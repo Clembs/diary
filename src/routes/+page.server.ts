@@ -35,6 +35,6 @@ export const actions: Actions = {
 			throw error(400, 'Invalid user');
 		}
 
-		return { user, url };
+		return { user, baseUrl: url };
 	}
 };
