@@ -1,0 +1,29 @@
+:root {
+	--font-heading: 'Gambarino', serif;
+	--font-body: 'Inter', sans-serif;
+
+	--neutral-50: #fafafa;
+	--neutral-100: #f4f4f5;
+	--neutral-200: #e4e4e7;
+	--neutral-300: #d4d4d8;
+	--neutral-400: #a1a1aa;
+	--neutral-500: #71717a;
+	--neutral-600: #52525b;
+	--neutral-700: #3f3f46;
+	--neutral-800: #27272a;
+	--neutral-900: #18181b;
+
+	--primary-50: #eef2ff;
+	--primary-100: #e0e7ff;
+	--primary-200: #c7d2fe;
+	--primary-300: #a5b4fc;
+	--primary-400: #818cf8;
+	--primary-500: #6366f1;
+	--primary-600: #4f46e5;
+	--primary-700: #4338ca;
+	--primary-800: #3730a3;
+	--primary-900: #312e81;
+}
+
+@import url('./theme-light.scss') (prefers-color-scheme: light);
+@import url('./theme-dark.scss') (prefers-color-scheme: dark);
