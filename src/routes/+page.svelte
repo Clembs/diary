@@ -19,12 +19,12 @@
 
 <UserCard
 	user={{ avatar: null, username: 'Clembs', id: 'clembs' }}
-	baseUrl="{$page.url.origin}/data"
+	baseUrl="{$page.url.origin}/data/clembs"
 />
 
 <h2>Search public journals</h2>
 
-<p>Use a Journal-compatible data server URL, or @ a user on this server.</p>
+<p>Use a Journal-compatible data server URL.</p>
 
 <search>
 	<form
@@ -37,8 +37,8 @@
 	>
 		<TextInput
 			bind:value={url}
-			placeholder="e.g. {$page.url.origin}/data/clembs or @Clembs"
-			label="Journal URL or handle"
+			placeholder="e.g. {$page.url.origin}/data/clembs"
+			label="Journal URL"
 			name="url"
 			autofocus
 			disabled={!!form?.user}
