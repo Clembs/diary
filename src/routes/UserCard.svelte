@@ -7,7 +7,7 @@
 	export let baseUrl: string;
 </script>
 
-<a href="/journal?userUrl={baseUrl}/{user.id}" class="user">
+<a href="/journal?baseUrl={baseUrl}" class="user">
 	<div class="profile">
 		<Avatar
 			username={user.username}
