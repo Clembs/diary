@@ -1,6 +1,7 @@
 import { object, string, nullable, enum_, type Output, regex } from 'valibot';
 
 export const UserSchema = object({
+	id: string(),
 	username: string(),
 	avatar: nullable(string())
 });

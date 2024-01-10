@@ -4,8 +4,9 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const user = await db.query.users.findFirst({
-		where: ({ username }, { eq }) => eq(username, params.user),
+		where: ({ id }, { eq }) => eq(id, params.user),
 		columns: {
+			id: true,
 			username: true,
 			avatar: true
 		}
