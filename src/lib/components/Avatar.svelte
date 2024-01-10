@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let username = '';
-	export let avatarUrl = '';
+	export let avatarUrl: string | null | undefined = '';
 	export let size = 32;
 </script>
 
