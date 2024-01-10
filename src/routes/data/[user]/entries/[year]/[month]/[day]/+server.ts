@@ -6,7 +6,8 @@ export const GET: RequestHandler = async ({ params }) => {
 	// const requestDate = new Date(params.entry);
 	const entry = await db.query.entries.findFirst({
 		// orderBy: ({ date }, { desc }) => desc(date),
-		where: ({ userId, date }, { eq, and }) => and(eq(userId, params.user), eq(date, params.entry)),
+		where: ({ userId, date }, { eq, and }) =>
+			and(eq(userId, params.user), eq(date, `${params.year}${params.month}${params.day}`)),
 		columns: {
 			date: true,
 			summary: true,
