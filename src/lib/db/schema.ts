@@ -1,12 +1,12 @@
 import { relations, sql } from 'drizzle-orm';
-import { pgTable, text, integer, date } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, date, timestamp } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
 	id: text('id')
 		.default(sql`gen_random_uuid()`)
 		.primaryKey(),
 	username: text('username').notNull(),
-	email: text('email').notNull().unique(),
+	email: text('email').unique(),
 	avatar: text('avatar')
 });
 
@@ -36,9 +36,18 @@ export const activities = pgTable('activities', {
 	color: text('color')
 });
 
+export const sessions = pgTable('sessions', {
+	id: text('id')
+		.default(sql`gen_random_uuid()`)
+		.primaryKey(),
+	userId: text('user_id').notNull(),
+	expiresAt: timestamp('expires_at').notNull()
+});
+
 export const usersRelations = relations(users, ({ many }) => ({
 	entries: many(entries),
-	activities: many(activities)
+	activities: many(activities),
+	sessions: many(sessions)
 }));
 
 export const entriesRelations = relations(entries, ({ one, many }) => ({
@@ -67,5 +76,12 @@ export const entryActivitiesRelations = relations(entryActivities, ({ one, many 
 	activity: one(activities, {
 		fields: [entryActivities.activityId],
 		references: [activities.id]
+	})
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+	user: one(users, {
+		fields: [sessions.userId],
+		references: [users.id]
 	})
 }));
