@@ -1,13 +1,14 @@
 import { db } from '$lib/db';
-import { error, json } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { sql } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ params }) => {
-	// const requestDate = new Date(params.entry);
+	const userDate = `${params.year}-${params.month}-${params.day}`;
+
 	const entry = await db.query.entries.findFirst({
-		// orderBy: ({ date }, { desc }) => desc(date),
 		where: ({ userId, date }, { eq, and }) =>
-			and(eq(userId, params.user), eq(date, `${params.year}${params.month}${params.day}`)),
+			and(eq(userId, params.user), eq(date, sql`${userDate}`)),
 		columns: {
 			date: true,
 			summary: true,
@@ -19,7 +20,6 @@ export const GET: RequestHandler = async ({ params }) => {
 				with: {
 					activity: {
 						columns: {
-							id: true,
 							label: true,
 							color: true
 						}
@@ -32,9 +32,5 @@ export const GET: RequestHandler = async ({ params }) => {
 		}
 	});
 
-	if (!entry) {
-		throw error(404, 'Entry not found');
-	}
-
-	return json(entry);
+	return json(entry || null);
 };
