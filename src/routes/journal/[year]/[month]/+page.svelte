@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import dayjs from 'dayjs';
 	import type { PageServerData } from './$types';
-	import Avatar from '$lib/components/Avatar.svelte';
+	import Header from '$lib/components/Header.svelte';
+	import dayjs from 'dayjs';
 
 	export let data: PageServerData;
 
@@ -35,17 +35,7 @@
 	const weeks = generateMonthMatrix(date.year(), date.month());
 </script>
 
-<h1>{date.format('MMMM YYYY')}</h1>
-<div class="profile">
-	<Avatar avatarUrl={data.user?.avatar} username={data.user?.username} size={24} />
-	<div class="profile-text">
-		<div class="profile-text-name">
-			{data.user?.username}
-		</div>
-	</div>
-</div>
-
-<!-- {JSON.stringify(weeks, null, 2)} -->
+<Header title={date.format('MMMM YYYY')} user={data.user} baseUrl={data.baseUrl} />
 
 <div class="calendar">
 	<ul class="weekdays">
@@ -62,11 +52,22 @@
 		{#each weeks as week}
 			<!-- <div class="week"> -->
 			{#each week as day}
-				<li class="day">
+				<li>
 					{#if day}
-						<a href="/journal/{date.year()}/{date.month() + 1}/{day}{$page.url.search}">
-							{day}
-						</a>
+						{#if new Date(`${date.year()}/${date.month() + 1}/${day}`).getTime() > new Date().getTime()}
+							<span class="day">{day}</span>
+						{:else}
+							<a
+								class="day passed {data.entries?.find(
+									(entry) => new Date(entry.date).getDate() === day
+								)
+									? 'active'
+									: ''}"
+								href="/journal/{date.year()}/{date.month() + 1}/{day}{$page.url.search}"
+							>
+								{day}
+							</a>
+						{/if}
 					{/if}
 				</li>
 			{/each}
@@ -75,22 +76,14 @@
 	</ul>
 </div>
 
-{JSON.stringify(data.entries)}
-
 <style lang="scss">
-	.profile {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-		margin-top: -0.75rem;
-	}
-
 	.calendar {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
 		margin: 2rem 0;
 		height: 100%;
+		user-select: none;
 
 		ul {
 			display: grid;
@@ -115,17 +108,30 @@
 			li {
 				margin: 0;
 				padding: 0;
+			}
+		}
+	}
 
-				a {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					width: 100%;
-					text-decoration: none;
-					background-color: var(--color-surface);
-					border-radius: 0.5rem;
-					padding: 1rem 0.5rem;
-				}
+	.day {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		// width: 100%;
+		max-width: 7rem;
+		text-decoration: none;
+		border-radius: 0.5rem;
+		padding: 1rem 0.5rem;
+		border: 2px solid transparent;
+
+		&.passed {
+			border: 2px solid var(--color-surface);
+			font-weight: 500;
+
+			&.active {
+				background-color: var(--color-surface);
+				color: var(--color-on-surface);
+				// background-color: var(--color-surface-variant);
+				// color: var(--color-on-surface-variant);
 			}
 		}
 	}
