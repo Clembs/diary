@@ -1,7 +1,7 @@
 import { error, fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { array, parse } from 'valibot';
-import { EntrySchema } from '$lib/types';
+import { EntrySchema, type Entry } from '$lib/types';
 
 export const load: PageServerLoad = async ({ url, fetch, params, parent }) => {
 	const journalBaseUrl = url.searchParams.get('baseUrl');
@@ -12,27 +12,32 @@ export const load: PageServerLoad = async ({ url, fetch, params, parent }) => {
 
 	const reqUrl = `${journalBaseUrl}/entries/${params.year}/${params.month}`;
 
-	const req = await fetch(reqUrl, {
-		method: 'GET',
-		headers: {
-			'User-Agent': 'Diary/1.0.0 (https://diary.clembs.com)'
-		}
-	});
-
-	if (!req.ok || !req.headers.get('content-type')?.startsWith('application/json'))
-		return fail(400, {
-			message: 'Invalid URL or journal not found.'
+	try {
+		const req = await fetch(reqUrl, {
+			method: 'GET',
+			headers: {
+				'User-Agent': 'Diary/1.0.0 (https://diary.clembs.com)'
+			}
 		});
 
-	const res = await req.json();
+		if (!req.ok || !req.headers.get('content-type')?.startsWith('application/json'))
+			return fail(400, {
+				message: 'Invalid URL or journal not found.'
+			});
 
-	const entries = parse(array(EntrySchema), res);
+		const res = await req.json();
+		let entries: Entry[];
 
-	if (!entries) {
-		throw error(400, 'Invalid entry schema.');
+		try {
+			entries = parse(array(EntrySchema), res);
+		} catch (e) {
+			throw error(400, 'Invalid entry schema.');
+		}
+
+		const { user, baseUrl } = await parent();
+
+		return { entries, baseUrl: baseUrl!, user: user! };
+	} catch (e) {
+		throw error(400, String(e));
 	}
-
-	const { user, baseUrl } = await parent();
-
-	return { entries, baseUrl: baseUrl!, user: user! };
 };

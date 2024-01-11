@@ -12,29 +12,34 @@ export const load: LayoutServerLoad = async ({ setHeaders, fetch, url }) => {
 
 	const reqUrl = `${journalBaseUrl}/about`;
 
-	const req = await fetch(reqUrl, {
-		method: 'GET',
-		headers: {
-			'User-Agent': 'Diary/1.0.0 (https://diary.clembs.com)'
-		}
-	});
-
-	if (!req.ok || !req.headers.get('content-type')?.startsWith('application/json'))
-		return fail(400, {
-			message: 'Invalid URL'
+	try {
+		const req = await fetch(reqUrl, {
+			method: 'GET',
+			headers: {
+				'User-Agent': 'Diary/1.0.0 (https://diary.clembs.com)'
+			}
 		});
 
-	const res = await req.json();
+		if (!req.ok || !req.headers.get('content-type')?.startsWith('application/json')) {
+			return fail(400, {
+				message: 'Invalid URL'
+			});
+		}
 
-	const user = parse(UserSchema, res);
+		const res = await req.json();
 
-	if (!user) {
-		throw error(400, 'Invalid user');
+		const user = parse(UserSchema, res);
+
+		if (!user) {
+			throw error(400, 'Invalid user');
+		}
+
+		setHeaders({
+			'Cache-Control': 'max-age=3600'
+		});
+
+		return { user, baseUrl: journalBaseUrl };
+	} catch (e) {
+		throw error(400, 'Request failed. Make sure that the URL is correct.');
 	}
-
-	setHeaders({
-		'Cache-Control': 'max-age=3600'
-	});
-
-	return { user, baseUrl: journalBaseUrl };
 };
