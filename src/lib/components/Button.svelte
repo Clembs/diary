@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let href = '';
-	export let style: 'filled' | 'outlined' | 'text' | 'danger' = 'filled';
+	export let style: 'filled' | 'secondary' | 'outlined' | 'text' | 'danger' = 'filled';
 	export let disabled = false;
 	export let type: 'submit' | 'button' = 'button';
 	export let inline = true;
@@ -63,6 +63,12 @@
 			--_border: 1px solid var(--color-on-background);
 			--_text-color: var(--color-background);
 			--_hover-bg: var(--color-on-surface);
+		}
+		&.secondary {
+			--_bg: var(--color-surface);
+			--_border: 1px solid var(--color-surface-variant);
+			--_text-color: var(--color-on-surface);
+			--_hover-bg: var(--color-surface-variant);
 		}
 		&.outlined {
 			--_bg: var(--color-background);
