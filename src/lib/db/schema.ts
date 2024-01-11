@@ -1,15 +1,19 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { pgTable, text, integer, date } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
-	id: text('id').primaryKey(),
+	id: text('id')
+		.default(sql`gen_random_uuid()`)
+		.primaryKey(),
 	username: text('username').notNull(),
 	email: text('email').notNull().unique(),
 	avatar: text('avatar')
 });
 
 export const entries = pgTable('entries', {
-	id: text('id').primaryKey(),
+	id: text('id')
+		.default(sql`gen_random_uuid()`)
+		.primaryKey(),
 	date: date('date').notNull(),
 	userId: text('user_id')
 		.notNull()
@@ -22,7 +26,9 @@ export const entries = pgTable('entries', {
 });
 
 export const activities = pgTable('activities', {
-	id: text('id').primaryKey(),
+	id: text('id')
+		.default(sql`gen_random_uuid()`)
+		.primaryKey(),
 	label: text('label').notNull(),
 	userId: text('user_id')
 		.notNull()
