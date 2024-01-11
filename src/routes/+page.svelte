@@ -6,9 +6,9 @@
 	import type { ActionData } from './$types';
 	import UserCard from './UserCard.svelte';
 
-	export let form: ActionData;
-
 	let url = '';
+
+	export let form: ActionData;
 </script>
 
 <h1>Welcome to Journal (super early alpha)</h1>
@@ -18,8 +18,8 @@
 <h2>Read my journal</h2>
 
 <UserCard
-	user={{ avatar: null, username: 'Clembs', id: 'clembs' }}
-	baseUrl="{$page.url.origin}/data/clembs"
+	user={{ avatar: null, username: 'Clembs', id: '2af80eac-fb25-4932-bd11-5417903f0649' }}
+	baseUrl="{$page.url.origin}/data/2af80eac-fb25-4932-bd11-5417903f0649"
 />
 
 <h2>Search public journals</h2>
@@ -37,7 +37,7 @@
 	>
 		<TextInput
 			bind:value={url}
-			placeholder="e.g. {$page.url.origin}/data/clembs"
+			placeholder="e.g. {$page.url.origin}/data/2af80eac-fb25-4932-bd11-5417903f0649"
 			label="Journal URL"
 			name="url"
 			autofocus
