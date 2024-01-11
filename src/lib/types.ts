@@ -1,4 +1,15 @@
-import { object, string, nullable, enum_, type Output, regex } from 'valibot';
+import {
+	object,
+	string,
+	nullable,
+	enum_,
+	type Output,
+	regex,
+	array,
+	number,
+	minValue,
+	maxValue
+} from 'valibot';
 
 export const UserSchema = object({
 	id: string(),
@@ -17,20 +28,18 @@ export enum Emotion {
 }
 
 export const ActivitySchema = object({
-	id: string(),
 	label: string(),
 	color: nullable(string([regex(/^#[0-9a-f]{6}$/i)]))
 });
 
 export const EntrySchema = object({
-	id: string(),
 	date: string(),
 	summary: nullable(string()),
 	emoji: nullable(string()),
 	emotion: nullable(enum_(Emotion)),
-	activities: nullable(
+	activities: array(
 		object({
-			percent: string(),
+			percent: number([minValue(0), maxValue(100)]),
 			activity: ActivitySchema
 		})
 	)
