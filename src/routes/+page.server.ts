@@ -27,8 +27,6 @@ export const actions: Actions = {
 
 		const res = await req.json();
 
-		console.log(res);
-
 		const user = parse(UserSchema, res);
 
 		if (!user) {

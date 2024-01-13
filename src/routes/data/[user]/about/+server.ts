@@ -12,8 +12,6 @@ export const GET: RequestHandler = async ({ params }) => {
 		}
 	});
 
-	console.log(user);
-
 	if (!user) {
 		throw error(404, 'User not found');
 	}

@@ -55,17 +55,3 @@ export async function createSession({ cookies }: RequestEvent, userId: string) {
 		expires: expiresAt
 	});
 }
-
-export async function signOut({ locals, cookies }: RequestEvent) {
-	const session = await locals.getSession();
-
-	if (session) {
-		await db.delete(sessions).where(eq(sessions.id, session.id));
-
-		cookies.delete('session_id', {
-			path: '/'
-		});
-
-		throw redirect(303, '/settings');
-	}
-}
