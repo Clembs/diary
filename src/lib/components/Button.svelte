@@ -4,12 +4,20 @@
 	export let disabled = false;
 	export let type: 'submit' | 'button' = 'button';
 	export let inline = true;
+	export let icon = false;
 	let className = '';
 	export { className as class };
 </script>
 
 {#if href && !disabled}
-	<a class="button {style} {className}" {href} role="button" {...$$restProps} class:inline>
+	<a
+		class="button {style} {className}"
+		{href}
+		role="button"
+		{...$$restProps}
+		class:inline
+		class:icon
+	>
 		<slot />
 	</a>
 {:else}
@@ -21,6 +29,7 @@
 		{disabled}
 		{...$$restProps}
 		class:inline
+		class:icon
 	>
 		<slot />
 	</button>
@@ -56,6 +65,11 @@
 		&.inline {
 			display: inline-flex;
 			width: max-content;
+		}
+
+		&.icon {
+			padding: 0.5rem;
+			gap: 0;
 		}
 
 		&.filled {
