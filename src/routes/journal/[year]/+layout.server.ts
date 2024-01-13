@@ -34,9 +34,9 @@ export const load: LayoutServerLoad = async ({ setHeaders, fetch, url }) => {
 			throw error(400, 'Invalid user');
 		}
 
-		setHeaders({
-			'Cache-Control': 'max-age=3600'
-		});
+		// setHeaders({
+		// 	'Cache-Control': 'max-age=3600'
+		// });
 
 		return { user, baseUrl: journalBaseUrl };
 	} catch (e) {
