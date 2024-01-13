@@ -12,9 +12,9 @@
 		<span class="profile-text-name">
 			{user?.username}
 		</span>
-		<span class="subtext">
+		<!-- <span class="subtext">
 			• {baseUrl?.replace(/(^\w+:|^)\/\//, '')}
-		</span>
+		</span> -->
 	</div>
 </div>
 
