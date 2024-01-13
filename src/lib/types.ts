@@ -8,7 +8,8 @@ import {
 	array,
 	number,
 	minValue,
-	maxValue
+	maxValue,
+	optional
 } from 'valibot';
 import type { sessions, users } from './db/schema';
 
@@ -36,14 +37,16 @@ export const ActivitySchema = object({
 export const EntrySchema = object({
 	id: string(),
 	date: string(),
-	summary: nullable(string()),
-	emoji: nullable(string()),
-	emotion: nullable(enum_(Emotion)),
-	activities: array(
-		object({
-			percent: number([minValue(0), maxValue(100)]),
-			activity: ActivitySchema
-		})
+	summary: optional(nullable(string())),
+	emoji: optional(nullable(string())),
+	emotion: optional(nullable(enum_(Emotion))),
+	activities: optional(
+		array(
+			object({
+				percent: number([minValue(0), maxValue(100)]),
+				activity: ActivitySchema
+			})
+		)
 	)
 });
 
