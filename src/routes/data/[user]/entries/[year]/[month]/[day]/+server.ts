@@ -10,6 +10,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		where: ({ userId, date }, { eq, and }) =>
 			and(eq(userId, params.user), eq(date, sql`${userDate}`)),
 		columns: {
+			id: true,
 			date: true,
 			summary: true,
 			emoji: true,

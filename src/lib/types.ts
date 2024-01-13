@@ -34,6 +34,7 @@ export const ActivitySchema = object({
 });
 
 export const EntrySchema = object({
+	id: string(),
 	date: string(),
 	summary: nullable(string()),
 	emoji: nullable(string()),
