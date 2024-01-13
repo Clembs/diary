@@ -44,7 +44,6 @@
 				label="Journal URL"
 				name="url"
 				autofocus
-				disabled={!!form?.user}
 			/>
 
 			{#if !form?.user}
@@ -57,7 +56,7 @@
 		{#if form.message}
 			<p class="error">{form.message}</p>
 		{:else if form.user}
-			<h2>User journals on this URL</h2>
+			<h3>User journals on this URL</h3>
 
 			<UserCard {...form} />
 		{/if}
