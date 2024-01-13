@@ -4,7 +4,7 @@
 	import { page } from '$app/stores';
 	import Button from '$lib/components/Button.svelte';
 	import Profile from '$lib/components/Profile.svelte';
-	import { ChevronLeft, ChevronRight, Eye, Pencil } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight, CornerUpLeft, Eye, Pencil } from 'lucide-svelte';
 	import { getBaseServerUrl } from '$lib/helpers/getBaseServerUrl';
 
 	export let data: LayoutServerData;
@@ -14,8 +14,16 @@
 </script>
 
 <header>
+	<a
+		class="back-btn subtext"
+		href="/journal/{$page.params.year}/{$page.params.month}?baseUrl={data.baseUrl}"
+	>
+		<CornerUpLeft size={16} />
+		Go back
+	</a>
+
 	<div class="title">
-		<h1>{date.format('MMMM DD, YYYY')}</h1>
+		<h1>{date.format('dddd, MMMM DD')}</h1>
 
 		<div class="controls">
 			<Button
@@ -74,6 +82,21 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+
+		.back-btn {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			text-decoration: none;
+			padding: 0.25rem 0.5rem;
+			margin: -0.75rem -0.5rem;
+			width: max-content;
+			border-radius: 0.5rem;
+
+			&:hover {
+				background-color: var(--color-surface);
+			}
+		}
 
 		.title {
 			display: flex;
