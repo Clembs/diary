@@ -11,6 +11,7 @@ export const GET: RequestHandler = async ({ params }) => {
 				between(date, `${params.year}/${params.month}/01`, `${params.year}/${params.month}/31`)
 			),
 		columns: {
+			id: true,
 			date: true,
 			summary: true,
 			emoji: true,
