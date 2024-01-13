@@ -1,9 +1,9 @@
 import { error, fail } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types';
 import { parse } from 'valibot';
 import { EntrySchema, type Entry } from '$lib/types';
 
-export const load: PageServerLoad = async ({ url, fetch, params, parent, setHeaders }) => {
+export const load: LayoutServerLoad = async ({ url, fetch, params, parent, setHeaders }) => {
 	const journalBaseUrl = url.searchParams.get('baseUrl');
 
 	if (!journalBaseUrl || !/https?:\/\/.*/.test(journalBaseUrl)) {
@@ -12,8 +12,10 @@ export const load: PageServerLoad = async ({ url, fetch, params, parent, setHead
 
 	const reqUrl = `${journalBaseUrl}/entries/${params.year}/${params.month}/${params.day}`;
 
+	let req: Response;
+
 	try {
-		const req = await fetch(reqUrl, {
+		req = await fetch(reqUrl, {
 			method: 'GET',
 			headers: {
 				'User-Agent': 'Diary/1.0.0 (https://diary.clembs.com)'
@@ -24,29 +26,25 @@ export const load: PageServerLoad = async ({ url, fetch, params, parent, setHead
 			return fail(400, {
 				message: 'Invalid URL or journal not found.'
 			});
+	} catch (e) {
+		throw error(400, 'Request failed. Make sure that the URL is correct.');
+	}
 
-		const res = await req.json();
+	const res = await req.json();
 
-		if (!res) {
-			throw error(404, 'Entry not found.');
-		}
+	let entry: Entry | null = null;
 
-		let entry: Entry;
-
+	if (res) {
 		try {
 			entry = parse(EntrySchema, res);
 		} catch (e) {
 			throw error(400, 'Invalid entry schema.');
 		}
-
-		const { user, baseUrl } = await parent();
-
-		setHeaders({
-			'Cache-Control': 'max-age=3600'
-		});
-
-		return { entry: entry!, baseUrl: baseUrl!, user: user! };
-	} catch (e) {
-		throw error(400, 'Request failed. Make sure that the URL is correct.');
 	}
+
+	setHeaders({
+		'Cache-Control': 'max-age=3600'
+	});
+
+	return { entry, ...(await parent()) };
 };
