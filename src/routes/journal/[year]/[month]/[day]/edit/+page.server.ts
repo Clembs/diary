@@ -3,7 +3,8 @@ import type { Actions } from './$types';
 import { getBaseServerUrl } from '$lib/helpers/getBaseServerUrl';
 import { db } from '$lib/db';
 import { entries } from '$lib/db/schema';
-import { and, eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+import { addLeadingZero } from '$lib/helpers/addLeadingZero';
 
 export const actions: Actions = {
 	default: async ({ request, url, params, locals: { getUserData } }) => {
@@ -29,7 +30,7 @@ export const actions: Actions = {
 			throw error(400, 'You can only edit your own journals.');
 		}
 
-		const date = `${params.year}-${params.month}-${params.day}`;
+		const date = `${params.year}-${addLeadingZero(params.month)}-${addLeadingZero(params.day)}`;
 		const formData = await request.formData();
 		const summary = formData.get('summary')?.toString();
 		const id = `${userData.id}-${date}`;
@@ -38,37 +39,25 @@ export const actions: Actions = {
 			throw error(400, 'No summary provided');
 		}
 
-		const entry = await db.query.entries.findFirst({
-			where: ({ userId, date }) => and(eq(userId, userData.id), eq(date, sql`${date}`))
-		});
-
-		if (entry) {
-			await db
-				.update(entries)
-				.set({
+		const newEntry = await db
+			.insert(entries)
+			.values({
+				id,
+				date,
+				summary,
+				userId: userData.id
+			})
+			.onConflictDoUpdate({
+				where: eq(entries.id, id),
+				set: {
 					summary
-				})
-				.where(eq(entries.id, id));
-		} else {
-			await db
-				.insert(entries)
-				.values({
-					id,
-					date,
-					summary,
-					userId: userData.id
-				})
-				.onConflictDoUpdate({
-					where: eq(entries.id, id),
-					set: {
-						summary
-					},
-					target: [entries.id]
-				});
-		}
+				},
+				target: [entries.id]
+			})
+			.returning();
 
 		return {
-			success: true
+			...newEntry
 		};
 	}
 };
