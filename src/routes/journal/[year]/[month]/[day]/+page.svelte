@@ -1,8 +1,11 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
+	import { page } from '$app/stores';
+	import Button from '$lib/components/Button.svelte';
+	import { getBaseServerUrl } from '$lib/helpers/getBaseServerUrl';
+	import type { LayoutServerData } from './$types';
 	import { marked } from 'marked';
 
-	export let data: PageServerData;
+	export let data: LayoutServerData;
 
 	// const emotion: Record<Emotion, string> = {
 	// 	ANGRY: '😡',
@@ -15,12 +18,23 @@
 	// };
 </script>
 
-<section id="summary">
-	{@html marked(data.entry?.summary || '')}
-</section>
+{#if !data.entry}
+	{#if data.userData?.id === data.user?.id && getBaseServerUrl(data.baseUrl) === $page.url.origin}
+		<p class="subtext">You haven't written an entry for this date yet.</p>
 
-<!-- TODO: Finish those -->
-<!-- <section id="emotion">
+		<Button href="{$page.url.pathname}/edit{$page.url.search}">Write an entry</Button>
+	{:else}
+		<p class="subtext">
+			{data.user?.username} hasn't written an entry for this date yet.
+		</p>
+	{/if}
+{:else}
+	<section id="summary">
+		{@html marked(data.entry?.summary || '')}
+	</section>
+
+	<!-- TODO: Finish those -->
+	<!-- <section id="emotion">
 	<div class="section-title">Emotion</div>
 
 	<span class="emoji">
@@ -38,7 +52,8 @@
 	</ul>
 </section> -->
 
-<!-- {JSON.stringify(data.entry)} -->
+	<!-- {JSON.stringify(data.entry)} -->
+{/if}
 
 <style lang="scss">
 	#summary {
