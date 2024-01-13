@@ -14,7 +14,9 @@
 		loading = true;
 		return ({ update }) => {
 			loading = false;
-			update();
+			update({
+				reset: false
+			});
 		};
 	}}
 	method="post"
