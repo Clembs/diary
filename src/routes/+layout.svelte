@@ -2,12 +2,12 @@
 	import '../styles/global.scss';
 </script>
 
-<main>
+<div class="content">
 	<slot />
-</main>
+</div>
 
 <style lang="scss">
-	main {
+	.content {
 		margin: 0 auto;
 		max-width: 800px;
 		padding: 1rem;
