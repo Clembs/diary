@@ -11,51 +11,55 @@
 	export let form: ActionData;
 </script>
 
-<h1>Welcome to Journal (super early alpha)</h1>
+<header>
+	<h1>Welcome to Journal (super early alpha)</h1>
 
-<p>The open-source, decentralized journaling web app.</p>
+	<p>The open-source, decentralized journaling web app.</p>
+</header>
 
-<h2>Read my journal</h2>
+<main>
+	<h2>Read my journal</h2>
 
-<UserCard
-	user={{ avatar: null, username: 'Clembs', id: '2af80eac-fb25-4932-bd11-5417903f0649' }}
-	baseUrl="{$page.url.origin}/data/2af80eac-fb25-4932-bd11-5417903f0649"
-/>
+	<UserCard
+		user={{ avatar: null, username: 'Clembs', id: '2af80eac-fb25-4932-bd11-5417903f0649' }}
+		baseUrl="{$page.url.origin}/data/2af80eac-fb25-4932-bd11-5417903f0649"
+	/>
 
-<h2>Search public journals</h2>
+	<h2>Search public journals</h2>
 
-<p>Use a Journal-compatible data server URL.</p>
+	<p>Use a Journal-compatible data server URL.</p>
 
-<search>
-	<form
-		method="POST"
-		use:enhance={() =>
-			({ update }) =>
-				update({
-					reset: false
-				})}
-	>
-		<TextInput
-			bind:value={url}
-			placeholder="e.g. {$page.url.origin}/data/2af80eac-fb25-4932-bd11-5417903f0649"
-			label="Journal URL"
-			name="url"
-			autofocus
-			disabled={!!form?.user}
-		/>
+	<search>
+		<form
+			method="POST"
+			use:enhance={() =>
+				({ update }) =>
+					update({
+						reset: false
+					})}
+		>
+			<TextInput
+				bind:value={url}
+				placeholder="e.g. {$page.url.origin}/data/2af80eac-fb25-4932-bd11-5417903f0649"
+				label="Journal URL"
+				name="url"
+				autofocus
+				disabled={!!form?.user}
+			/>
 
-		{#if !form?.user}
-			<Button type="submit">Search</Button>
+			{#if !form?.user}
+				<Button type="submit">Search</Button>
+			{/if}
+		</form>
+	</search>
+
+	{#if form}
+		{#if form.message}
+			<p class="error">{form.message}</p>
+		{:else if form.user}
+			<h2>User journals on this URL</h2>
+
+			<UserCard {...form} />
 		{/if}
-	</form>
-</search>
-
-{#if form}
-	{#if form.message}
-		<p class="error">{form.message}</p>
-	{:else if form.user}
-		<h2>User journals on this URL</h2>
-
-		<UserCard {...form} />
 	{/if}
-{/if}
+</main>
