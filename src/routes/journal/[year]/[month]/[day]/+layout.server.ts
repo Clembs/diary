@@ -2,6 +2,7 @@ import { error, fail } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import { parse } from 'valibot';
 import { EntrySchema, type Entry } from '$lib/types';
+import { addLeadingZero } from '$lib/helpers/addLeadingZero';
 
 export const load: LayoutServerLoad = async ({ url, fetch, params, parent, setHeaders }) => {
 	const journalBaseUrl = url.searchParams.get('baseUrl');
@@ -10,7 +11,8 @@ export const load: LayoutServerLoad = async ({ url, fetch, params, parent, setHe
 		throw error(400, 'Invalid journal base URL');
 	}
 
-	const reqUrl = `${journalBaseUrl}/entries/${params.year}/${params.month}/${params.day}`;
+	const date = `${params.year}/${addLeadingZero(params.month)}/${addLeadingZero(params.day)}`;
+	const reqUrl = `${journalBaseUrl}/entries/${date}`;
 
 	let req: Response;
 
@@ -42,9 +44,9 @@ export const load: LayoutServerLoad = async ({ url, fetch, params, parent, setHe
 		}
 	}
 
-	setHeaders({
-		'Cache-Control': 'max-age=3600'
-	});
+	// setHeaders({
+	// 	'Cache-Control': 'max-age=3600'
+	// });
 
 	return { entry, ...(await parent()) };
 };
