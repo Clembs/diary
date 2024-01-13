@@ -25,8 +25,5 @@
 		h1 {
 			margin-bottom: 0.75rem;
 		}
-
-		margin-top: 3rem;
-		margin-bottom: 1rem;
 	}
 </style>
