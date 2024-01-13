@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import type { PageServerData } from './$types';
-	import Header from '$lib/components/Header.svelte';
 	import dayjs from 'dayjs';
+	import { ChevronLeft, ChevronRight, Home } from 'lucide-svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Profile from '$lib/components/Profile.svelte';
 
 	export let data: PageServerData;
 
@@ -35,7 +37,43 @@
 	const weeks = generateMonthMatrix(date.year(), date.month());
 </script>
 
-<Header title={date.format('MMMM YYYY')} user={data.user} baseUrl={data.baseUrl} />
+<header>
+	<a class="back-btn subtext" href="/">
+		<Home size={16} />
+		Home
+	</a>
+
+	<div class="title">
+		<h1>{date.format('MMMM YYYY')}</h1>
+
+		<div class="controls">
+			<Button
+				style="secondary"
+				inline={false}
+				icon
+				href={`/journal/${date.add(-1, 'month').format('YYYY/MM')}?baseUrl=${data.baseUrl}`}
+				disabled={date.isBefore('2024-01-02')}
+				aria-label="Previous month"
+			>
+				<ChevronLeft />
+			</Button>
+			<Button
+				style="secondary"
+				inline={false}
+				icon
+				href={`/journal/${date.add(1, 'month').format('YYYY/MM')}?baseUrl=${data.baseUrl}`}
+				disabled={date.isAfter(dayjs().add(-1, 'month'))}
+				aria-label="Next month"
+			>
+				<ChevronRight />
+			</Button>
+		</div>
+	</div>
+
+	{#if data.user}
+		<Profile user={data.user} baseUrl={data.baseUrl} />
+	{/if}
+</header>
 
 <div class="calendar">
 	<ul class="weekdays">
@@ -77,6 +115,42 @@
 </div>
 
 <style lang="scss">
+	header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		.back-btn {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			text-decoration: none;
+			padding: 0.25rem 0.5rem;
+			margin: -0.75rem -0.5rem;
+			width: max-content;
+			border-radius: 0.5rem;
+
+			&:hover {
+				background-color: var(--color-surface);
+			}
+		}
+
+		.title {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.controls {
+				display: flex;
+				gap: 0.25rem;
+			}
+
+			h1 {
+				margin-bottom: 0.75rem;
+			}
+		}
+	}
+
 	.calendar {
 		display: flex;
 		flex-direction: column;
@@ -127,11 +201,20 @@
 			border: 2px solid var(--color-surface);
 			font-weight: 500;
 
+			&:hover {
+				background-color: var(--color-surface);
+				color: var(--color-on-surface);
+			}
+
 			&.active {
 				background-color: var(--color-surface);
 				color: var(--color-on-surface);
-				// background-color: var(--color-surface-variant);
-				// color: var(--color-on-surface-variant);
+
+				&:hover {
+					background-color: var(--color-surface-variant);
+					color: var(--color-on-surface-variant);
+					border: 2px solid var(--color-surface-variant);
+				}
 			}
 		}
 	}
