@@ -21,7 +21,6 @@ export const GET: RequestHandler = async ({ params }) => {
 				with: {
 					activity: {
 						columns: {
-							id: true,
 							label: true,
 							color: true
 						}
